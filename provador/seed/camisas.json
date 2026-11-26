@@ -1,0 +1,144 @@
+[
+  {
+    "id": "essencial",
+    "slug": "camiseta-essencial",
+    "nome": "Camiseta Essencial",
+    "descricao": "Algodão penteado 30.1, toque macio e gola canelada que não deforma. O básico que combina com tudo, com o monograma bordado no peito.",
+    "preco": 8990,
+    "modelagem": "regular",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG",
+      "XGG"
+    ],
+    "cores": [
+      {
+        "id": "preto",
+        "nome": "Preto",
+        "hex": "#17191d",
+        "imagem": "/seed/essencial-preto.jpg"
+      },
+      {
+        "id": "off-white",
+        "nome": "Off-white",
+        "hex": "#f1eee7",
+        "imagem": "/seed/essencial-off-white.jpg"
+      },
+      {
+        "id": "areia",
+        "nome": "Areia",
+        "hex": "#d6c4a2",
+        "imagem": "/seed/essencial-areia.jpg"
+      },
+      {
+        "id": "musgo",
+        "nome": "Verde musgo",
+        "hex": "#4a5a3c",
+        "imagem": "/seed/essencial-musgo.jpg"
+      }
+    ],
+    "fotos": [
+      "/seed/essencial-preto.jpg"
+    ],
+    "estampaFrente": "/seed/essencial-logo.png",
+    "estampaCostas": null,
+    "padrao": null,
+    "estampaLargura": 0.085,
+    "estampaPosicao": "peito-esquerdo",
+    "padraoEscala": 0.18,
+    "linkCompra": "https://exemplo.com.br/produtos/camiseta-essencial",
+    "ativo": true
+  },
+  {
+    "id": "sol-poente",
+    "slug": "camiseta-sol-poente",
+    "nome": "Camiseta Sol Poente",
+    "descricao": "Estampa em silk de alta definição na frente e nas costas. Malha 100% algodão com caimento reto e barra dupla.",
+    "preco": 12990,
+    "modelagem": "regular",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "cores": [
+      {
+        "id": "off-white",
+        "nome": "Off-white",
+        "hex": "#efe9dd",
+        "imagem": "/seed/sol-poente-off-white.jpg"
+      },
+      {
+        "id": "preto",
+        "nome": "Preto",
+        "hex": "#17191d",
+        "imagem": "/seed/sol-poente-preto.jpg"
+      },
+      {
+        "id": "marinho",
+        "nome": "Azul marinho",
+        "hex": "#1f2a44",
+        "imagem": "/seed/sol-poente-marinho.jpg"
+      }
+    ],
+    "fotos": [
+      "/seed/sol-poente-off-white.jpg"
+    ],
+    "estampaFrente": "/seed/sol-poente-frente.png",
+    "estampaCostas": "/seed/sol-poente-costas.png",
+    "padrao": null,
+    "estampaLargura": 0.27,
+    "estampaPosicao": "centro",
+    "padraoEscala": 0.18,
+    "linkCompra": "https://exemplo.com.br/produtos/camiseta-sol-poente",
+    "ativo": true
+  },
+  {
+    "id": "grid-oversized",
+    "slug": "camiseta-grid-oversized",
+    "nome": "Camiseta Grid Oversized",
+    "descricao": "Modelagem oversized com ombro levemente caído e estampa corrida geométrica. Malha encorpada de 240 g/m².",
+    "preco": 14990,
+    "modelagem": "oversized",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "cores": [
+      {
+        "id": "grafite",
+        "nome": "Grafite",
+        "hex": "#2b2e33",
+        "imagem": "/seed/grid-oversized-grafite.jpg"
+      },
+      {
+        "id": "dourado",
+        "nome": "Dourado",
+        "hex": "#c7a96b",
+        "imagem": "/seed/grid-oversized-dourado.jpg"
+      },
+      {
+        "id": "verde-agua",
+        "nome": "Verde água",
+        "hex": "#9fc9be",
+        "imagem": "/seed/grid-oversized-verde-agua.jpg"
+      }
+    ],
+    "fotos": [
+      "/seed/grid-oversized-grafite.jpg"
+    ],
+    "estampaFrente": null,
+    "estampaCostas": null,
+    "padrao": "/seed/grid-padrao.png",
+    "estampaLargura": 0.26,
+    "estampaPosicao": "centro",
+    "padraoEscala": 0.12,
+    "linkCompra": "https://exemplo.com.br/produtos/camiseta-grid-oversized",
+    "ativo": true
+  }
+]
