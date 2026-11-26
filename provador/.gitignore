@@ -9,3 +9,5 @@ next-env.d.ts
 .vercel
 # Gerados no postinstall (cópia do pacote @mediapipe/tasks-vision e download do modelo)
 public/mediapipe/
+# versão de demonstração estática (npm run demo:build)
+demo-dist/

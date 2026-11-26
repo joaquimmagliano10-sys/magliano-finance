@@ -2,6 +2,7 @@
 
 import type { PoseLandmarker } from "@mediapipe/tasks-vision";
 import type { Landmark, MaskData } from "../body/estimate";
+import { asset, fetchEmbeddedBinary, STATIC_DEMO } from "./runtime";
 
 /**
  * Detecção de pose + silhueta com MediaPipe Pose Landmarker, 100% no navegador:
@@ -10,7 +11,7 @@ import type { Landmark, MaskData } from "../body/estimate";
  * WASM e modelo são servidos do próprio site (public/mediapipe, preparados no
  * `npm install`). Se o modelo local não existir, usamos a URL oficial do Google.
  */
-const LOCAL_MODEL = "/mediapipe/pose_landmarker_full.task";
+const LOCAL_MODEL = asset("mediapipe/pose_landmarker_full.task");
 const CDN_MODEL =
   process.env.NEXT_PUBLIC_POSE_MODEL_URL ||
   "https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_full/float16/latest/pose_landmarker_full.task";
@@ -20,12 +21,17 @@ let landmarkerPromise: Promise<PoseLandmarker> | null = null;
 export function getPoseLandmarker(): Promise<PoseLandmarker> {
   landmarkerPromise ??= (async () => {
     const { FilesetResolver, PoseLandmarker } = await import("@mediapipe/tasks-vision");
-    const fileset = await FilesetResolver.forVisionTasks("/mediapipe/wasm");
-    const local = await fetch(LOCAL_MODEL, { method: "HEAD" }).then((r) => r.ok).catch(() => false);
-    const modelAssetPath = local ? LOCAL_MODEL : CDN_MODEL;
+    const fileset = await FilesetResolver.forVisionTasks(asset("mediapipe/wasm"));
+    let baseOptions: { modelAssetPath?: string; modelAssetBuffer?: Uint8Array };
+    if (STATIC_DEMO) {
+      baseOptions = { modelAssetBuffer: new Uint8Array(await fetchEmbeddedBinary(asset("mediapipe/pose-model.json"))) };
+    } else {
+      const local = await fetch(LOCAL_MODEL, { method: "HEAD" }).then((r) => r.ok).catch(() => false);
+      baseOptions = { modelAssetPath: local ? LOCAL_MODEL : CDN_MODEL };
+    }
     const create = (delegate: "GPU" | "CPU") =>
       PoseLandmarker.createFromOptions(fileset, {
-        baseOptions: { modelAssetPath, delegate },
+        baseOptions: { ...baseOptions, delegate },
         runningMode: "IMAGE",
         numPoses: 1,
         outputSegmentationMasks: true,

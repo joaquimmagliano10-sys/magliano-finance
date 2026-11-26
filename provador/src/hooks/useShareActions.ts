@@ -3,6 +3,7 @@
 import { useCallback, useState } from "react";
 import { BRAND } from "@/lib/brand";
 import { downloadBlob } from "@/lib/client/images";
+import { STATIC_DEMO } from "@/lib/client/runtime";
 import { buildShareCard } from "@/lib/client/share-card";
 import type { PublicShirt } from "@/lib/types";
 import { resultKey, useProvador } from "@/store/provador";
@@ -30,7 +31,17 @@ export function useShareActions(shirt: PublicShirt, snapshot: () => string | nul
     setBusy(true);
     try {
       const blob = await card();
-      if (blob) downloadBlob(blob, `${shirt.slug}-${color?.id ?? "prova"}.jpg`);
+      if (!blob) return;
+      const filename = `${shirt.slug}-${color?.id ?? "prova"}.jpg`;
+      if (STATIC_DEMO) {
+        // dentro do claude.ai o download passa pela capacidade "downloads"
+        const claude = (window as unknown as { claude?: { use: (n: string) => Promise<{ save: (r: { filename: string; data: Blob }) => Promise<unknown> } | null> } }).claude;
+        const downloads = await claude?.use("downloads").catch(() => null);
+        if (downloads) await downloads.save({ filename, data: blob }).catch(() => undefined);
+        else downloadBlob(blob, filename);
+        return;
+      }
+      downloadBlob(blob, filename);
     } finally {
       setBusy(false);
     }
@@ -38,6 +49,17 @@ export function useShareActions(shirt: PublicShirt, snapshot: () => string | nul
 
   const shareWhatsApp = useCallback(async () => {
     const text = `Olha a ${shirt.nome} (${color?.nome}) que eu provei no provador virtual da ${BRAND.nome}!${shirt.linkCompra ? ` ${shirt.linkCompra}` : ""}`;
+    if (STATIC_DEMO) {
+      // a página de demonstração só pode abrir sites externos por um link de verdade
+      const a = document.createElement("a");
+      a.href = `https://wa.me/?text=${encodeURIComponent(text)}`;
+      a.target = "_blank";
+      a.rel = "noopener noreferrer";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      return;
+    }
     setBusy(true);
     try {
       const blob = await card();

@@ -3,6 +3,7 @@
 import { useCallback } from "react";
 import { demoTryOn } from "@/lib/client/demo-tryon";
 import { loadImage } from "@/lib/client/images";
+import { STATIC_DEMO } from "@/lib/client/runtime";
 import { textureFor } from "@/lib/client/texture-spec";
 import type { PublicShirt } from "@/lib/types";
 import { resultKey, useProvador } from "@/store/provador";
@@ -55,6 +56,10 @@ export function useTryOnRunner(opts: { origem: "web" | "loja"; kioskToken?: stri
       const key = resultKey(shirt.id, colorId);
       const { photo, setResult } = useProvador.getState();
       if (!photo) return;
+      if (STATIC_DEMO) {
+        setResult(key, { startedAt: Date.now(), image: undefined, error: undefined });
+        return runDemo(shirt, colorId);
+      }
       setResult(key, { status: "enviando", startedAt: Date.now(), image: undefined, error: undefined, mode: undefined, shareToken: undefined });
       const fd = new FormData();
       fd.append("foto", photo.blob, "foto.jpg");

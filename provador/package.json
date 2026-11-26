@@ -13,7 +13,8 @@
     "gerar:modelos": "tsx scripts/build-models.ts",
     "gerar:imagens": "tsx scripts/build-seed-images.ts",
     "seed": "tsx scripts/seed.ts",
-    "hash-senha": "node scripts/hash-password.mjs"
+    "hash-senha": "node scripts/hash-password.mjs",
+    "demo:build": "node scripts/build-demo.mjs"
   },
   "engines": {
     "node": ">=20.9"

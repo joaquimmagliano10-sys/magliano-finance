@@ -8,6 +8,7 @@ import { useShareActions } from "@/hooks/useShareActions";
 import { useTryOnRunner } from "@/hooks/useTryOnRunner";
 import type { Sexo } from "@/lib/body/types";
 import { preparePhoto } from "@/lib/client/images";
+import { STATIC_DEMO } from "@/lib/client/runtime";
 import { formatPrice } from "@/lib/format";
 import { recommendSize, sortSizes } from "@/lib/sizes";
 import type { PublicShirt } from "@/lib/types";
@@ -94,7 +95,7 @@ export function TryOnFlow({ shirts, initialShirtId, initialColorId }: { shirts: 
     const keep = st.size && sizes.includes(st.size) ? st.size : null;
     const rec = st.measurements && st.measurementsSource !== "padrao" ? recommendSize(st.sexo, st.measurements.peito, s.tamanhos, s.modelagem) : null;
     st.set({ shirtId: s.id, colorId: s.cores[0]?.id ?? null, size: keep ?? rec ?? (sizes.includes("M") ? "M" : sizes[0]) });
-    if (s.id !== shirt.id) {
+    if (s.id !== shirt.id && !STATIC_DEMO) {
       void fetch("/api/eventos", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ camisaId: s.id, origem: "web" }) }).catch(() => undefined);
     }
   };
@@ -162,10 +163,12 @@ export function TryOnFlow({ shirts, initialShirtId, initialColorId }: { shirts: 
                       <PhotoTips />
                     </div>
                     <div className="mt-6 flex flex-wrap gap-3">
-                      <button onClick={() => setCamera(true)} className="btn-primary">
-                        <Camera className="h-4 w-4 text-gold" /> Usar a câmera
-                      </button>
-                      <button onClick={() => fileRef.current?.click()} className="btn-outline">
+                      {!STATIC_DEMO && (
+                        <button onClick={() => setCamera(true)} className="btn-primary">
+                          <Camera className="h-4 w-4 text-gold" /> Usar a câmera
+                        </button>
+                      )}
+                      <button onClick={() => fileRef.current?.click()} className={STATIC_DEMO ? "btn-primary" : "btn-outline"}>
                         <ImageUp className="h-4 w-4" /> Enviar da galeria
                       </button>
                     </div>

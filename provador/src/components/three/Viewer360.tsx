@@ -1,11 +1,13 @@
 "use client";
 
 import { CameraControls, ContactShadows, Environment, Lightformer, useGLTF } from "@react-three/drei";
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { Canvas, useFrame, useLoader, useThree } from "@react-three/fiber";
 import { Component, forwardRef, type ReactNode, Suspense, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
+import { type GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { heightScale, morphWeights } from "@/lib/body/morphs";
 import { BASE_BODY, BASE_FOLGA, type BodyMeasurements, type Sexo } from "@/lib/body/types";
+import { asset, fetchEmbeddedBinary, STATIC_DEMO } from "@/lib/client/runtime";
 import { composeShirtTexture, knitNormalCanvas, type ShirtTextureSpec } from "@/lib/client/shirt-texture";
 import { shade } from "@/lib/format";
 
@@ -39,7 +41,25 @@ interface Props {
 
 const AZIMUTH: Record<ViewName, number> = { frente: 0, costas: Math.PI, esquerda: Math.PI / 2, direita: -Math.PI / 2 };
 
-useGLTF.preload("/models/camiseta-base.glb");
+if (!STATIC_DEMO) useGLTF.preload(asset("models/camiseta-base.glb"));
+
+/** Carrega um .glb embutido em JSON (só na demonstração estática). */
+class EmbeddedGLTFLoader extends THREE.Loader<GLTF> {
+  load(url: string, onLoad: (gltf: GLTF) => void, _onProgress?: unknown, onError?: (err: unknown) => void) {
+    fetchEmbeddedBinary(url)
+      .then((buf) => new GLTFLoader().parse(buf, "", onLoad, onError))
+      .catch((err) => onError?.(err));
+  }
+}
+
+/** Modelo 3D de public/models (no app normal via useGLTF; na demo, do JSON embutido). */
+function useModel(path: string): { scene: THREE.Group } {
+  // STATIC_DEMO é constante durante toda a execução, então a ordem dos hooks não muda
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  if (STATIC_DEMO) return useLoader(EmbeddedGLTFLoader, asset(`${path}.json`));
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  return useGLTF(asset(path));
+}
 
 function useMorphTargets(root: THREE.Object3D, weights: Record<string, number>) {
   const meshes = useMemo(() => {
@@ -66,7 +86,7 @@ function useMorphTargets(root: THREE.Object3D, weights: Record<string, number>) 
 }
 
 function Mannequin({ sexo, weights }: { sexo: Sexo; weights: Record<string, number> }) {
-  const { scene } = useGLTF(`/models/manequim-${sexo}.glb`);
+  const { scene } = useModel(`models/manequim-${sexo}.glb`);
   const obj = useMemo(() => {
     const c = scene.clone(true);
     c.traverse((o) => {
@@ -84,7 +104,7 @@ function Mannequin({ sexo, weights }: { sexo: Sexo; weights: Record<string, numb
 }
 
 function Shirt({ sexo, weights, spec, onTextureReady }: { sexo: Sexo; weights: Record<string, number>; spec: ShirtTextureSpec; onTextureReady?: () => void }) {
-  const { scene } = useGLTF("/models/camiseta-base.glb");
+  const { scene } = useModel("models/camiseta-base.glb");
   const gl = useThree((s) => s.gl);
   const node = useMemo(() => {
     const src = scene.getObjectByName(`Camiseta_${sexo}`) ?? scene.children[0];
